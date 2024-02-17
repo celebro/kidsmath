@@ -19,7 +19,8 @@ body {
     background-image: url('./topography.svg'), linear-gradient(110deg, #f93d66, #6d47d9);
     background-size: 340px, auto;
     min-height: 100vh;
-    margin: 50px;
+    margin: 40px;
+    margin-top: 0;
     background-attachment: fixed;
     letter-spacing: -1px;
 }
