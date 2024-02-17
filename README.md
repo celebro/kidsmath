@@ -1,8 +1,19 @@
-# Welcome to Remix + Vite!
+# Kid's math
+
+Math drills for early years elementary math
+
+-   addition
+-   multiplication
+
+Styling shamelessly borrowed from https://github.com/wesbos/css-grid
+
+## Welcome to Remix + Vite!
+
+Based on `npx create-remix@latest --template remix-run/remix/templates/unstable-vite-cloudflare`, https://remix.run/docs/en/main/future/vite#cloudflare
 
 📖 See the [Remix docs](https://remix.run/docs) and the [Remix Vite docs](https://remix.run/docs/en/main/future/vite) for details on supported features.
 
-## Development
+### Development
 
 Run the Vite dev server:
 
@@ -10,7 +21,7 @@ Run the Vite dev server:
 npm run dev
 ```
 
-## Deployment
+### Deployment
 
 First, build your app for production:
 
@@ -23,14 +34,3 @@ Then run the app in production mode:
 ```sh
 npm start
 ```
-
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-- `build/server`
-- `build/client`
