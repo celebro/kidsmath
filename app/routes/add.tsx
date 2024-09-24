@@ -1,82 +1,74 @@
 import Calculator from '~/components/calculator';
 
+let allNumberRanges = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 export default function Mul() {
-    return <Calculator createCalc={createCalculation} options={['Pr', 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]} />;
+    return <Calculator createCalc={createCalculation} options={['Pr', '+', '-', ...allNumberRanges]} />;
 }
 
 function createCalculation(selected: string[]): { calc: string; result: number } {
-    // const a = selected.length ? +getRandom(selected) : getRandom(allNums);
-    // const b = getRandom(allNums);
-    const numberRanges = selected.filter((x) => !Number.isNaN(+x));
-    const canCross = selected.includes('Pr');
+    let numberRanges = selected.filter((x) => !Number.isNaN(+x)).map((x) => +x);
+    if (numberRanges.length === 0) {
+        numberRanges = allNumberRanges;
+    }
+    let canCross = selected.includes('Pr');
 
     let result = 0;
     let a = 0;
 
     if (canCross) {
-        if (numberRanges.length === 1) {
-            const range = +numberRanges[0];
-            result = getRandomInt(range - 10 + 2, range);
-            a = randomWithoutCrossing(result);
-        } else if (numberRanges.length > 1) {
-            const range = +getRandom(numberRanges.slice(1));
-            const remainingRanges = numberRanges.filter((x) => +x < range);
-            const otherRange = +getRandom(remainingRanges);
-            result = getRandomInt(range - 10 + 2, range);
-            a = getRandomInt(otherRange - 10, otherRange);
-        } else {
-            result = getRandomInt(2, 100);
-            a = getRandomInt(1, result - 1);
-        }
-    } else {
-        if (numberRanges.length) {
-            const range = +getRandom(numberRanges);
-            result = getRandomInt(range - 10 + 2, range);
-        } else {
-            result = result = getRandomInt(2, 100);
-        }
-        a = randomWithoutCrossing(result);
-    }
+        let max = getRandom(numberRanges);
+        let min = max - 9;
 
-    // if (numberRanges.length) {
-    //     const range = +getRandom(numberRanges);
-    //     result = getRandomInt(range - 10 + 2, range);
-    //     if (canCross && numberRanges.length > 1) {
-    //         const remainingRanges = numberRanges.filter((x) => +x < range);
-    //         const otherRange = +getRandom(remainingRanges);
-    //         a = getRandomInt(otherRange - 10, otherRange);
-    //     } else {
-    //         a = randomWithoutCrossing(result);
-    //     }
-    // } else {
-    //     result = getRandomInt(2, 100);
-    //     if (canCross) {
-    //         a = getRandomInt(1, result - 1);
-    //     } else {
-    //         a = randomWithoutCrossing(result);
-    //     }
-    // }
+        result = getRandomInt(min, max);
+        a = getRandomInt(1, result - 1);
+    } else {
+        let range = getRandom(numberRanges);
+        let tens = (range - 10) / 10;
+        let ones = getRandomWeightedInt(0.8) + 1;
+
+        result = 10 * tens + ones;
+        a = 10 * getRandomInt(0, tens) + getRandomInt(0, ones);
+    }
 
     let b = result - a;
 
-    if (Math.random() < 0.5) {
-        [a, b] = [b, a];
+    // if (Math.random() < 0.5) {
+    //     [a, b] = [b, a];
+    // }
+
+    let op = getRandom(['add', 'sub']);
+    if (selected.includes('+') && selected.includes('-')) {
+        // noop
+    } else if (selected.includes('+')) {
+        op = 'add';
+    } else if (selected.includes('-')) {
+        op = 'sub';
     }
 
-    return {
-        calc: `${a} + ${b}`,
-        result: result
-    };
+    if (op === 'add') {
+        return {
+            calc: `${a} + ${b}`,
+            result: result
+        };
+    } else {
+        return {
+            calc: `${result} - ${a}`,
+            result: b
+        };
+    }
 }
 
 function getRandom<T>(options: T[]) {
     return options[Math.floor(Math.random() * options.length)];
 }
 
-function getRandomInt(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRandomWeightedInt(weight: number): number {
+    const random = Math.random();
+    // Use a fractional power close to 1 to create a smaller bias
+    const biasedRandom = Math.pow(random, weight);
+    return Math.floor(biasedRandom * 10);
 }
 
-function randomWithoutCrossing(result: number) {
-    return getRandomInt(result - (result % 10), result - 1);
+function getRandomInt(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
